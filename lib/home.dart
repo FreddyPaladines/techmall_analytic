@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterflow_ui/flutterflow_ui.dart';
-import 'package:techmall_analytic/widgets/Imagen.dart';
+import 'package:techmall_analytic/Color/ColorWidget.dart';
+import 'package:techmall_analytic/widgets/DatosContainer.dart';
+import 'package:techmall_analytic/widgets/ImagenEstadistica.dart';
+import 'package:techmall_analytic/widgets/ImagenPrincipalMovil.dart';
+import 'package:techmall_analytic/widgets/ImagenPrincipalWeb.dart';
+import 'package:techmall_analytic/widgets/textfirebasehome.dart';
+//import 'package:techmall_analytic/widgets/Imagen.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({Key? key}) : super(key: key);
@@ -31,6 +37,11 @@ class _HomePageWidgetState extends State<HomePageWidget>
 
   @override
   Widget build(BuildContext context) {
+    altura:
+    MediaQuery.sizeOf(context).height;
+    ancho:
+    MediaQuery.sizeOf(context).width;
+
     if (isiOS) {
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
@@ -41,9 +52,9 @@ class _HomePageWidgetState extends State<HomePageWidget>
     }
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
+/*       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+          : FocusScope.of(context).unfocus(), */
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
@@ -152,11 +163,16 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                     ),
                                   ),
                                 ),
-                                Icon(
-                                  Icons.stacked_bar_chart_rounded,
-                                  color: Colors.white,
-                                  size: 28,
-                                ),
+                                if (responsiveVisibility(
+                                  context: context,
+                                  phone: false,
+                                  tablet: false,
+                                ))
+                                  Icon(
+                                    Icons.stacked_bar_chart_rounded,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       12, 0, 0, 0),
@@ -461,12 +477,37 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.menu,
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            size: 24,
-                                          ),
+                                          if (responsiveVisibility(
+                                            context: context,
+                                            phone: false,
+                                            tablet: false,
+                                          ))
+                                            Text(
+                                              "Mapas Multiespectrales",
+                                              textAlign: TextAlign.start,
+                                              style: FlutterFlowTheme.of(
+                                                      context)
+                                                  .bodyMedium
+                                                  .override(
+                                                    fontFamily: 'Readex Pro',
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primaryText,
+                                                    fontSize: 16,
+                                                  ),
+                                            ),
+                                          if (responsiveVisibility(
+                                            context: context,
+                                            tabletLandscape: false,
+                                            desktop: false,
+                                          ))
+                                            Icon(
+                                              Icons.menu,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 24,
+                                            ),
                                           VerticalDivider(
                                             thickness: 1,
                                             color: FlutterFlowTheme.of(context)
@@ -501,12 +542,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                       fontSize: 12,
                                                     ),
                                               ),
-                                              Text(
-                                                'Los Angeles',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
-                                              ),
+                                              DataDisplayCampo()
                                             ],
                                           ),
                                           SizedBox(
@@ -538,12 +574,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
                                                       fontSize: 12,
                                                     ),
                                               ),
-                                              Text(
-                                                'Bananera',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
-                                              ),
+                                              DataDisplayLote(),
                                             ],
                                           ),
                                         ],
@@ -560,232 +591,177 @@ class _HomePageWidgetState extends State<HomePageWidget>
                           height: 10,
                           decoration: BoxDecoration(),
                         ),
-                        ImagenHomePrincipal(),
+                        if (responsiveVisibility(
+                          context: context,
+                          phone: false,
+                          tablet: false,
+                        ))
+                          FutureBuilder(
+                              future: DataServiceFecha().getData(),
+                              builder: (context,
+                                  AsyncSnapshot<List<Map<String, dynamic>>>
+                                      snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Container();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return Column(
+                                    children: [
+                                      ImagenHomePrincipalWeb(
+                                        urlRGB: "${snapshot.data![1]['RGB']}",
+                                        urlNDVI: "${snapshot.data![1]['NDVI']}",
+                                      ),
+                                    ],
+                                  );
+                                }
+                              }),
+                        if (responsiveVisibility(
+                          context: context,
+                          desktop: false,
+                          tabletLandscape: false,
+                        ))
+                          ImagenHomePrincipalMOVIL(),
                         Container(
                           width: 400,
                           height: 10,
                           decoration: BoxDecoration(),
                         ),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.015,
-                              height: MediaQuery.sizeOf(context).height * 0.04,
-                              decoration: BoxDecoration(),
-                            ),
-                            FlutterFlowDropDown(
-/*                               controller: _model.dropDownValueController ??=
-                                  FormFieldController<String>(
-                                _model.dropDownValue ??= 'RGB',
-                              ), */
-                              options: ['NDRE', 'RGB', 'NDVI', 'OSAVI'],
-                              onChanged: (val) =>
-                                  setState(() => _model.dropDownValue = val),
-                              width: 120,
-                              height: MediaQuery.sizeOf(context).height * 0.05,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .override(
-                                    fontFamily: 'Readex Pro',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                              icon: Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                size: 24,
-                              ),
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              elevation: 2,
-                              borderColor: Colors.transparent,
-                              borderWidth: 1,
-                              borderRadius: 8,
-                              margin:
-                                  EdgeInsetsDirectional.fromSTEB(16, 4, 16, 4),
-                              hidesUnderline: true,
-                            ),
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.015,
-                              height: MediaQuery.sizeOf(context).height * 0.04,
-                              decoration: BoxDecoration(),
-                            ),
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.55,
-                              height: MediaQuery.sizeOf(context).height * 0.06,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                              ),
-                              child: Align(
-                                alignment: AlignmentDirectional(0, 0),
-                                child: ListView(
-                                  padding: EdgeInsets.fromLTRB(
-                                    3,
-                                    0,
-                                    0,
-                                    0,
-                                  ),
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '-Sep-',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 9,
-                                              ),
-                                        ),
-                                        Text(
-                                          '19',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                        Text(
-                                          '2023',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '-Sep-',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 9,
-                                              ),
-                                        ),
-                                        Text(
-                                          '07',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                        Text(
-                                          '2023',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '-Jul-',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 9,
-                                              ),
-                                        ),
-                                        Text(
-                                          '01',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                        Text(
-                                          '2023',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '-Jun-',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 9,
-                                              ),
-                                        ),
-                                        Text(
-                                          '14',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                        Text(
-                                          '2023',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '-Abr-',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 9,
-                                              ),
-                                        ),
-                                        Text(
-                                          '09',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
-                                        ),
-                                        Text(
-                                          '2023',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Readex Pro',
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ].divide(SizedBox(width: 10)),
+                        //Fecha desplegable--------------------
+                        Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "Fecha de Mapeo:",
+                                  textAlign: TextAlign.start,
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        fontFamily: 'Readex Pro',
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        fontSize: 15,
+                                      ),
                                 ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                width: MediaQuery.sizeOf(context).width * 0.015,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.04,
+                                decoration: BoxDecoration(),
+                              ),
+                              Container(
+                                width: MediaQuery.sizeOf(context).width * 0.015,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.04,
+                                decoration: BoxDecoration(),
+                              ),
+                              Container(
+                                width: MediaQuery.sizeOf(context).width * 0.55,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.06,
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryBackground,
+                                ),
+                                child: Align(
+                                    alignment: AlignmentDirectional(0, 0),
+                                    child: DataDisplayFecha()),
+                              ),
+                            ],
+                          ),
                         ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 5), // Espaciado vertical
+                          child: Divider(
+                            color: AppColors
+                                .moradoTechmall(), // Color del separador
+                            height: 0.5, // Altura del contenedor del separador
+                          ),
+                        ),
+                        Container(
+                          height: 30,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: Text(
+                            'Datos obtenidos en el monitoreo',
+                            textAlign: TextAlign.start,
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Readex Pro',
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryText,
+                                  fontSize: 18,
+                                ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: const Wrap(
+                            children: [
+                              InfoContainer(
+                                  title: 'Nombre de la hacienda',
+                                  content: 'Hacienda La Prosperidad'),
+                              InfoContainer(
+                                  title: 'Ubicación',
+                                  content: 'Valle del Cauca, Colombia'),
+                              InfoContainer(
+                                  title: 'Propietario',
+                                  content: 'Carlos Gutierrez'),
+                              InfoContainer(
+                                  title: 'Tipo de cultivo',
+                                  content: 'Café Arábica'),
+                              InfoContainer(
+                                  title: 'Temperatura', content: '19°C'),
+                              InfoContainer(
+                                  title: 'Niveles de nutrientes',
+                                  content: 'N: 3%, P: 1%, K: 2%'),
+                              InfoContainer(
+                                  title: 'Fecha de siembra',
+                                  content: '15 de abril, 2024'),
+                              InfoContainer(
+                                  title: 'pH del suelo', content: '6.5'),
+                              InfoContainer(
+                                  title: 'Hectáreas', content: '150 ha'),
+                              InfoContainer(
+                                  title: 'Incidencia de plagas',
+                                  content: 'Baja (5% afectadas)'),
+                              // Agrega más InfoContainer según necesites...
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        FutureBuilder(
+                            future: DataServiceFecha().getData(),
+                            builder: (context,
+                                AsyncSnapshot<List<Map<String, dynamic>>>
+                                    snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Container();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                return ImagenEstadistica(
+                                  urlPie: "${snapshot.data![1]['Pie']}",
+                                  urlHistograma:
+                                      "${snapshot.data![1]['Histograma']}",
+                                );
+                              }
+                            }),
                       ].addToEnd(SizedBox(height: 24)),
                     ),
                   ),
@@ -830,3 +806,36 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
 
   /// Additional helper methods are added here.
 }
+/* 
+FlutterFlowDropDown(
+                                
+                                options: ['NDRE', 'RGB', 'NDVI', 'OSAVI'],
+                                onChanged: /* (val) =>
+                                      setState(() => _model.dropDownValue = val) */
+                                    (val) {},
+                                width: 120,
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.05,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Readex Pro',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 24,
+                                ),
+                                fillColor: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                elevation: 2,
+                                borderColor: Colors.transparent,
+                                borderWidth: 1,
+                                borderRadius: 8,
+                                margin: EdgeInsetsDirectional.fromSTEB(
+                                    16, 4, 16, 4),
+                                hidesUnderline: true,
+                              ), */
