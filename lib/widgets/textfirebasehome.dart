@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterflow_ui/flutterflow_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:techmall_analytic/provider/variablesExt.dart';
 
 class DataServiceCampo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -68,62 +70,40 @@ class DataDisplay extends StatelessWidget {
   }
 }
 
-class DataDisplayCampo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: DataServiceCampo().getData(),
-      builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return Text(
-            '${snapshot.data![0]['Nombre']}',
-            style: FlutterFlowTheme.of(context).bodyMedium,
-          );
-          // Access data from snapshot.data and display it in your widget
-        }
-      },
-    );
-  }
-}
-
-class DataDisplayLote extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: DataServiceLote().getData(),
-      builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return Text(
-            '${snapshot.data![0]['Nombre']}',
-            style: FlutterFlowTheme.of(context).bodyMedium,
-          );
-          // Access data from snapshot.data and display it in your widget
-        }
-      },
-    );
-  }
-}
-
 class DataDisplayFecha extends StatefulWidget {
   @override
   State<DataDisplayFecha> createState() => _DataDisplayFechaState();
 }
 
 class _DataDisplayFechaState extends State<DataDisplayFecha> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String? loteSeleccionado;
+  Future<List<Timestamp>> obtenerDocumentosDeSubcoleccion(
+      hacienda, lote) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('Usuario')
+        .doc(
+            'GonzaloQuintana@techmall.com') // Sustituye esto por el ID real de tu documento
+        .collection('Hacienda')
+        .doc(hacienda)
+        .collection('Lote')
+        .doc(lote)
+        .collection('Fecha')
+        .get();
+    List<Timestamp> nombres =
+        querySnapshot.docs.map((doc) => doc['Fecha'] as Timestamp).toList();
+    return nombres;
+  }
+
   Set<int> selectedIndexes = Set<int>();
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<VariablesExt>(context, listen: true);
+
     return FutureBuilder(
-      future: DataServiceFecha().getData(),
-      builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+      future: obtenerDocumentosDeSubcoleccion(provider.hacienda, provider.lote),
+      builder: (BuildContext context, AsyncSnapshot<List<Timestamp>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container();
         } else if (snapshot.hasError) {
@@ -153,26 +133,25 @@ class _DataDisplayFechaState extends State<DataDisplayFecha> {
                         selectedIndexes.add(index);
                       }
                     });
-                    print(
-                        "Elemento seleccionado: ${snapshot.data![index]['NDVI']}");
+                    print("Elemento seleccionado: ${snapshot.data![index]}");
                   },
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${DateFormat.MMMM('es').format(snapshot.data![index]['Fecha'].toDate())}',
+                        '${DateFormat.MMMM('es').format(snapshot.data![index].toDate())}',
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                               fontFamily: 'Readex Pro',
                               fontSize: 9,
                             ),
                       ),
                       Text(
-                        '${snapshot.data![index]['Fecha'].toDate().day}',
+                        '${snapshot.data![index].toDate().day}',
                         style: FlutterFlowTheme.of(context).bodyMedium,
                       ),
                       Text(
-                        '${snapshot.data![index]['Fecha'].toDate().year}',
+                        '${snapshot.data![index].toDate().year}',
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                               fontFamily: 'Readex Pro',
                               fontSize: 12,

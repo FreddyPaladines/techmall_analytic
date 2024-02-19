@@ -1,6 +1,11 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:html' as html;
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:techmall_analytic/Color/ColorWidget.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ImagenHomePrincipalWeb extends StatelessWidget {
   final String urlRGB;
@@ -13,6 +18,7 @@ class ImagenHomePrincipalWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("${urlRGB}");
     var storageRefNDVI =
         FirebaseStorage.instance.ref().child(urlNDVI).getDownloadURL();
     var storageRefRGB =
@@ -111,7 +117,12 @@ class _ImagenCentroState extends State<ImagenCentro> {
     _transformationController.value *= Matrix4.diagonal3Values(0.8, 0.8, 1);
   }
 
-  void _downloadImage() async {}
+  void _downloadImage() async {
+    // Obtener los bytes de la imagen
+    final html.AnchorElement anchor = html.AnchorElement(href: widget.url);
+    anchor.setAttribute("download", "RGB.png");
+    anchor.click();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,8 +206,6 @@ class _ImagenCentroDesplegableState extends State<ImagenCentroDesplegable> {
     _transformationController.value *= Matrix4.diagonal3Values(0.8, 0.8, 1);
   }
 
-  void _downloadImage() async {}
-
   @override
   Widget build(BuildContext context) {
     // Crea la URL modificada en cada build, asegurándote de que la nueva imagen se cargue cuando cambie dropdownValue.
@@ -260,7 +269,7 @@ class _ImagenCentroDesplegableState extends State<ImagenCentroDesplegable> {
                         _interactiveViewer.onInteractionUpdate;
                       });
                     },
-                    items: <String>['NDVI', 'GNDVI', 'LCI', 'OSAVI']
+                    items: <String>['NDVI', 'GNVI', 'LCI', 'OSAVI']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -292,7 +301,12 @@ class _ImagenCentroDesplegableState extends State<ImagenCentroDesplegable> {
               ),
               SizedBox(width: 20.0),
               ElevatedButton(
-                onPressed: _downloadImage,
+                onPressed: () {
+                  final html.AnchorElement anchor =
+                      html.AnchorElement(href: modifiedUrl);
+                  anchor.setAttribute("download", "$dropdownValue.png");
+                  anchor.click();
+                },
                 child: Icon(Icons.download),
               )
             ],

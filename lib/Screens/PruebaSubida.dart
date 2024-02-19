@@ -7,12 +7,12 @@ import 'package:flutterflow_ui/flutterflow_ui.dart';
 import 'package:techmall_analytic/Screens/ShowDialog.dart';
 import 'package:techmall_analytic/firebase/SubirDatos.dart';
 
-class PruebaSubir extends StatefulWidget {
+class FormularioData extends StatefulWidget {
   @override
-  State<PruebaSubir> createState() => _PruebaSubirState();
+  State<FormularioData> createState() => _FormularioDataState();
 }
 
-class _PruebaSubirState extends State<PruebaSubir> {
+class _FormularioDataState extends State<FormularioData> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -78,8 +78,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('TechMall Form'),
-        backgroundColor: Color.fromARGB(126, 107, 107, 107),
+        backgroundColor: Color.fromARGB(124, 255, 255, 255),
+        flexibleSpace: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return Container(
+              height: kToolbarHeight,
+              child: Image.asset(
+                'assets/TechMallAnaliticLogo.png', // reemplaza 'assets/logo.png' con la ruta de tu imagen local
+                height: constraints.biggest.height,
+              ),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Form(

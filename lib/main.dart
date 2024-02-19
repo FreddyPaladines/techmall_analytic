@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => VariablesExt()),
       ],
       child: MaterialApp(
-        home: PruebaSubir(),
-        //HomePageWidget(),
+        home: HomePageWidget(),
+        //FormularioData(),
       ),
     );
   }
