@@ -5,6 +5,7 @@ import 'dart:html' as html;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:techmall_analytic/Color/ColorWidget.dart';
 import 'package:techmall_analytic/provider/variablesExt.dart';
 
 class ImagenHomePrincipalMOVIL extends StatelessWidget {
@@ -16,8 +17,7 @@ class ImagenHomePrincipalMOVIL extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var storageRef =
-        FirebaseStorage.instance.ref().child(urlRGB).getDownloadURL();
+    var storageRef = FirebaseStorage.instance.ref().child(urlRGB).getDownloadURL();
 
     return FutureBuilder<String>(
       future: storageRef,
@@ -101,7 +101,7 @@ class _ImagenCentroState extends State<ImagenCentro> {
               horizontal: 8.0,
             ),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 85, 80, 226), // Color de fondo morado
+              color: AppColors.colorFondoTech(), // Color de fondo morado
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
@@ -110,8 +110,7 @@ class _ImagenCentroState extends State<ImagenCentro> {
                 DropdownButtonHideUnderline(
                     child: Theme(
                   data: Theme.of(context).copyWith(
-                    canvasColor: Color.fromARGB(255, 85, 80,
-                        226), // Aquí defines el color del recuadro desplegable
+                    canvasColor: AppColors.colorFondoTech(), // Aquí defines el color del recuadro desplegable
                   ),
                   child: DropdownButton<String>(
                     value: dropdownValue, // Debes definir esta variable
@@ -119,8 +118,7 @@ class _ImagenCentroState extends State<ImagenCentro> {
                     iconSize: 24,
                     elevation: 4,
 
-                    underline:
-                        Container(), // Container vacío para quitar el subrayado
+                    underline: Container(), // Container vacío para quitar el subrayado
 
                     style: TextStyle(
                       color: Colors.white, // Color del texto blanco
@@ -156,22 +154,21 @@ class _ImagenCentroState extends State<ImagenCentro> {
             children: [
               ElevatedButton(
                 onPressed: _zoomIn,
-                child: Icon(Icons.zoom_in),
+                child: Icon(Icons.zoom_in, color: AppColors.colorFondoTech()),
               ),
               SizedBox(width: 20.0),
               ElevatedButton(
                 onPressed: _zoomOut,
-                child: Icon(Icons.zoom_out),
+                child: Icon(Icons.zoom_out, color: AppColors.colorFondoTech()),
               ),
               SizedBox(width: 20.0),
               ElevatedButton(
                 onPressed: () {
-                  final html.AnchorElement anchor =
-                      html.AnchorElement(href: modifiedUrl);
+                  final html.AnchorElement anchor = html.AnchorElement(href: modifiedUrl);
                   anchor.setAttribute("download", "$dropdownValue.png");
                   anchor.click();
                 },
-                child: Icon(Icons.download),
+                child: Icon(Icons.download, color: AppColors.colorFondoTech()),
               )
             ],
           ),

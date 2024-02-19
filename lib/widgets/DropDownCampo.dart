@@ -38,8 +38,6 @@ class _CampoWidgetState extends State<CampoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Asegurando que 'Domenica' está en la lista y es único
-    //final List<String> lotes = ['Lote 1', widget.campoInicial, 'Lote 3'];
     var provider = Provider.of<VariablesExt>(context, listen: true);
     return FutureBuilder<List<String>>(
         future: obtenerDocumentosDeSubcoleccion(),
@@ -49,11 +47,17 @@ class _CampoWidgetState extends State<CampoWidget> {
           } else if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else if (snapshot.hasData) {
-            final List<String>? lotes = snapshot.data;
+            final List<String>? haciendas = snapshot.data;
+            if (provider.hacienda2 != "") {
+              campoSeleccionado = provider.hacienda2;
+            }
             return DropdownButton<String>(
               value: campoSeleccionado, // Asegúrate de que este valor está en 'lotes'
+              //Actualizar la informacion dado que obtiene el primer valor mas no el cambio
+
               onChanged: (String? newValue) {
-                provider.sethacienda(newValue!);
+                //provider.setlote(lotes!.first);
+                provider.sethacienda2(newValue!);
                 setState(() {
                   campoSeleccionado = newValue;
                 });
@@ -61,7 +65,7 @@ class _CampoWidgetState extends State<CampoWidget> {
               underline: Container(),
               focusColor: Colors.white,
               dropdownColor: Colors.white,
-              items: lotes?.map<DropdownMenuItem<String>>((String value) {
+              items: haciendas?.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(
@@ -69,7 +73,7 @@ class _CampoWidgetState extends State<CampoWidget> {
                     style: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Readex Pro',
                           color: FlutterFlowTheme.of(context).secondaryText,
-                          fontSize: 14,
+                          fontSize: 17,
                         ),
                   ),
                 );

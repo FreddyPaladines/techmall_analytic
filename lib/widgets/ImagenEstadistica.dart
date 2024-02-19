@@ -13,10 +13,8 @@ class ImagenEstadistica extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var storageRefPie =
-        FirebaseStorage.instance.ref().child(urlPie).getDownloadURL();
-    var storageRefHistograma =
-        FirebaseStorage.instance.ref().child(urlHistograma).getDownloadURL();
+    var storageRefPie = FirebaseStorage.instance.ref().child(urlPie).getDownloadURL();
+    var storageRefHistograma = FirebaseStorage.instance.ref().child(urlHistograma).getDownloadURL();
     return Wrap(
       spacing: 10, // Espacio horizontal entre los elementos
       runSpacing: 10, // Espacio vertical entre los elementos
@@ -42,11 +40,9 @@ class ImagenEstadistica extends StatelessWidget {
                           height: 400,
                           decoration: BoxDecoration(
                             // Color de fondo
-                            borderRadius:
-                                BorderRadius.circular(15), // Bordes redondos
+                            borderRadius: BorderRadius.circular(15), // Bordes redondos
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  snapshot.data.toString()), // Primera imagen
+                              image: NetworkImage(snapshot.data.toString()), // Primera imagen
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -58,25 +54,22 @@ class ImagenEstadistica extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Color(
-                                0xFF6F61EF), // Fondo del cuadro, puedes cambiarlo a tu gusto
-                            borderRadius:
-                                BorderRadius.circular(10), // Bordes redondeados
+                            color:
+                                AppColors.colorFondoTech(), // Fondo del cuadro, puedes cambiarlo a tu gusto
+                            borderRadius: BorderRadius.circular(10), // Bordes redondeados
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.1),
                                 spreadRadius: 5,
                                 blurRadius: 7,
-                                offset:
-                                    Offset(0, 3), // Cambia la sombra a tu gusto
+                                offset: Offset(0, 3), // Cambia la sombra a tu gusto
                               ),
                             ],
                           ),
                           child: Text(
                             'Análisis NDVI',
                             style: TextStyle(
-                              color: Colors
-                                  .white, // Color del texto, cambia a tu gusto
+                              color: Colors.white, // Color del texto, cambia a tu gusto
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -108,11 +101,9 @@ class ImagenEstadistica extends StatelessWidget {
                           height: 400,
                           decoration: BoxDecoration(
                             // Color de fondo
-                            borderRadius:
-                                BorderRadius.circular(15), // Bordes redondos
+                            borderRadius: BorderRadius.circular(15), // Bordes redondos
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  snapshot.data.toString()), // Primera imagen
+                              image: NetworkImage(snapshot.data.toString()), // Primera imagen
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -124,25 +115,22 @@ class ImagenEstadistica extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Color(
-                                0xFF6F61EF), // Fondo del cuadro, puedes cambiarlo a tu gusto
-                            borderRadius:
-                                BorderRadius.circular(10), // Bordes redondeados
+                            color:
+                                AppColors.colorFondoTech(), // Fondo del cuadro, puedes cambiarlo a tu gusto
+                            borderRadius: BorderRadius.circular(10), // Bordes redondeados
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.1),
                                 spreadRadius: 5,
                                 blurRadius: 7,
-                                offset:
-                                    Offset(0, 3), // Cambia la sombra a tu gusto
+                                offset: Offset(0, 3), // Cambia la sombra a tu gusto
                               ),
                             ],
                           ),
                           child: Text(
                             'Histograma NDVI',
                             style: TextStyle(
-                              color: Colors
-                                  .white, // Color del texto, cambia a tu gusto
+                              color: Colors.white, // Color del texto, cambia a tu gusto
                               fontWeight: FontWeight.bold,
                             ),
                           ),

@@ -26,7 +26,6 @@ class AppColors {
   }
 
   static Color colorFondoTech() {
-    return Color.fromARGB(
-        45, 116, 102, 241); // Puedes cambiar esto al color que desees
+    return Color(0xFF031525); // Puedes cambiar esto al color que desees
   }
 }

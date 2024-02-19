@@ -6,9 +6,7 @@ class DataService {
 
   Future<List<Map<String, dynamic>>> getData() async {
     QuerySnapshot snapshot = await _firestore.collection('Usuario').get();
-    return snapshot.docs
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList();
+    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
   }
 }
 
@@ -17,17 +15,13 @@ class DataServiceHacienda {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<Map<String, dynamic>>> getData(hacienda) async {
-    QuerySnapshot snapshot =
-        await _firestore.collection('Usuario/$hacienda/Hacienda').get();
-    return snapshot.docs
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList();
+    QuerySnapshot snapshot = await _firestore.collection('Usuario/$hacienda/Hacienda').get();
+    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
   }
 }
 
 Future<Map<String, dynamic>?> obtenerDataUsuario(correo) async {
-  DocumentSnapshot docSnapshot =
-      await FirebaseFirestore.instance.collection('Usuario').doc(correo).get();
+  DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('Usuario').doc(correo).get();
   // Aquí podrías realizar operaciones asíncronas adicionales si fuera necesario
 
   if (docSnapshot.exists) {
@@ -39,8 +33,7 @@ Future<Map<String, dynamic>?> obtenerDataUsuario(correo) async {
   }
 }
 
-Future<List<String>> obtenerDocumentosDeSubcoleccion(
-    usuario, hacienda, lote) async {
+Future<List<String>> obtenerDocumentosDeSubcoleccion(usuario, hacienda, lote) async {
   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
       .collection('Usuario')
       .doc(usuario) // Sustituye esto por el ID real de tu documento
@@ -49,10 +42,7 @@ Future<List<String>> obtenerDocumentosDeSubcoleccion(
       .collection('Lote')
       .doc(lote)
       .collection('Fecha')
-
-      // Sustituye esto por el nombre de tu subcolección
       .get();
-  List<String> nombres =
-      querySnapshot.docs.map((doc) => doc['Informacion'] as String).toList();
+  List<String> nombres = querySnapshot.docs.map((doc) => doc['Informacion'] as String).toList();
   return nombres;
 }

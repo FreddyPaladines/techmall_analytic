@@ -29,6 +29,13 @@ class VariablesExt with ChangeNotifier {
     notifyListeners();
   }
 
+  String _hacienda2 = ""; // URL predeterminado
+  String get hacienda2 => _hacienda2;
+  void sethacienda2(String newhacienda2) {
+    _hacienda2 = newhacienda2;
+    notifyListeners();
+  }
+
   String _lote = ""; // URL predeterminado
   String get lote => _lote;
   void setlote(String newlote) {
