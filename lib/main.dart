@@ -30,7 +30,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => VariablesExt()),
       ],
       child: MaterialApp(
-        home: HomePageWidget(),
+        initialRoute: "/Auth",
+        routes: {
+          "/Auth": (context) => AuthWidget(),
+          "/Dashboard": (context) => HomePageWidget(),
+        },
+
+        //HomePageWidget(),
         //FormularioData(),
       ),
     );

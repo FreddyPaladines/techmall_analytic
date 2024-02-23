@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterflow_ui/flutterflow_ui.dart';
+import 'package:techmall_analytic/Color/ColorWidget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -11,8 +13,29 @@ class AuthWidget extends StatefulWidget {
 
 class _AuthWidgetState extends State<AuthWidget> {
   late AuthModel _model;
+  String _errorMessage = '';
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _signIn() async {
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _model.direccionCorreoController.text,
+        password: _model.contrasenaController.text,
+      );
+      Navigator.pushNamed(context, "/Dashboard");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      } else {
+        setState(() {
+          _errorMessage = "Usuario o contraseña incorrecta";
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -84,13 +107,10 @@ class _AuthWidgetState extends State<AuthWidget> {
                           ),
                           alignment: AlignmentDirectional(-1, 0),
                           child: Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(32, 0, 0, 0),
+                            padding: EdgeInsetsDirectional.fromSTEB(32, 0, 0, 0),
                             child: Text(
                               'Techmall Analytic',
-                              style: FlutterFlowTheme.of(context)
-                                  .displaySmall
-                                  .override(
+                              style: FlutterFlowTheme.of(context).displaySmall.override(
                                     fontFamily: 'Plus Jakarta Sans',
                                     color: Color(0xFF101213),
                                     fontSize: 36,
@@ -109,9 +129,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                               children: [
                                 Text(
                                   'Bienvenido',
-                                  style: FlutterFlowTheme.of(context)
-                                      .displaySmall
-                                      .override(
+                                  style: FlutterFlowTheme.of(context).displaySmall.override(
                                         fontFamily: 'Plus Jakarta Sans',
                                         color: Color(0xFF101213),
                                         fontSize: 36,
@@ -119,13 +137,10 @@ class _AuthWidgetState extends State<AuthWidget> {
                                       ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 12, 0, 24),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 24),
                                   child: Text(
                                     'Eficiencia agrícola, datos inteligentes',
-                                    style: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
+                                    style: FlutterFlowTheme.of(context).labelMedium.override(
                                           fontFamily: 'Plus Jakarta Sans',
                                           color: Color(0xFF57636C),
                                           fontSize: 14,
@@ -134,23 +149,18 @@ class _AuthWidgetState extends State<AuthWidget> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 0, 0, 16),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
                                   child: Container(
                                     width: 370,
                                     child: TextFormField(
-                                      controller:
-                                          _model.direccionCorreoController,
-                                      focusNode:
-                                          _model.direccionCorreoFocusNode,
+                                      controller: _model.direccionCorreoController,
+                                      focusNode: _model.direccionCorreoFocusNode,
                                       autofocus: true,
                                       autofillHints: [AutofillHints.email],
                                       obscureText: false,
                                       decoration: InputDecoration(
                                         labelText: 'Correo',
-                                        labelStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .override(
+                                        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                                               fontFamily: 'Plus Jakarta Sans',
                                               color: Color(0xFF57636C),
                                               fontSize: 14,
@@ -161,54 +171,46 @@ class _AuthWidgetState extends State<AuthWidget> {
                                             color: Color(0xFFF1F4F8),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: Color(0xFF4B39EF),
+                                            color: AppColors.colorFondoTech(),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                             color: Color(0xFFE0E3E7),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                             color: Color(0xFFE0E3E7),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         filled: true,
                                         fillColor: Color(0xFFF1F4F8),
                                       ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
+                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
                                             fontFamily: 'Plus Jakarta Sans',
                                             color: Color(0xFF101213),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                           ),
                                       keyboardType: TextInputType.emailAddress,
-                                      validator: _model
-                                          .direccionCorreoControllerValidator
-                                          .asValidator(context),
+                                      validator:
+                                          _model.direccionCorreoControllerValidator.asValidator(context),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 0, 0, 16),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
                                   child: Container(
                                     width: 370,
                                     child: TextFormField(
@@ -219,9 +221,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                                       obscureText: !_model.contrasenaVisibility,
                                       decoration: InputDecoration(
                                         labelText: 'Contraseña',
-                                        labelStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .override(
+                                        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                                               fontFamily: 'Plus Jakarta Sans',
                                               color: Color(0xFF57636C),
                                               fontSize: 14,
@@ -232,42 +232,36 @@ class _AuthWidgetState extends State<AuthWidget> {
                                             color: Color(0xFFF1F4F8),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: Color(0xFF4B39EF),
+                                            color: AppColors.colorFondoTech(),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                             color: Color(0xFFE0E3E7),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                             color: Color(0xFFE0E3E7),
                                             width: 2,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(12),
                                         ),
                                         filled: true,
                                         fillColor: Color(0xFFF1F4F8),
                                         suffixIcon: InkWell(
                                           onTap: () => setState(
-                                            () => _model.contrasenaVisibility =
-                                                !_model.contrasenaVisibility,
+                                            () => _model.contrasenaVisibility = !_model.contrasenaVisibility,
                                           ),
-                                          focusNode:
-                                              FocusNode(skipTraversal: true),
+                                          focusNode: FocusNode(skipTraversal: true),
                                           child: Icon(
                                             _model.contrasenaVisibility
                                                 ? Icons.visibility_outlined
@@ -277,40 +271,39 @@ class _AuthWidgetState extends State<AuthWidget> {
                                           ),
                                         ),
                                       ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
+                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
                                             fontFamily: 'Plus Jakarta Sans',
                                             color: Color(0xFF101213),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                           ),
-                                      validator: _model
-                                          .contrasenaControllerValidator
-                                          .asValidator(context),
+                                      validator: _model.contrasenaControllerValidator.asValidator(context),
                                     ),
                                   ),
                                 ),
+                                if (_errorMessage
+                                    .isNotEmpty) // Solo muestra el texto si hay un mensaje de error
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      _errorMessage,
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 0, 0, 16),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
                                   child: FFButtonWidget(
                                     onPressed: () {
-                                      print('Ingresar pressed ...');
+                                      _signIn();
                                     },
                                     text: 'Ingresar',
                                     options: FFButtonOptions(
                                       width: 370,
                                       height: 44,
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0, 0, 0, 0),
-                                      iconPadding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              0, 0, 0, 0),
-                                      color: Color(0xFF4B39EF),
-                                      textStyle: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .override(
+                                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                      iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                      color: AppColors.colorFondoTech(),
+                                      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                                             fontFamily: 'Plus Jakarta Sans',
                                             color: Colors.white,
                                             fontSize: 16,
@@ -328,11 +321,9 @@ class _AuthWidgetState extends State<AuthWidget> {
 
                                 // You will have to add an action on this rich text to go to your login page.
                                 Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 12, 0, 12),
+                                  padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 12),
                                   child: RichText(
-                                    textScaleFactor:
-                                        MediaQuery.of(context).textScaleFactor,
+                                    textScaleFactor: MediaQuery.of(context).textScaleFactor,
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
@@ -341,19 +332,15 @@ class _AuthWidgetState extends State<AuthWidget> {
                                         ),
                                         TextSpan(
                                           text: ' Regístrate ahora',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
+                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                 fontFamily: 'Plus Jakarta Sans',
-                                                color: Color(0xFF4B39EF),
+                                                color: AppColors.colorFondoTech(),
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                         )
                                       ],
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
+                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
                                             fontFamily: 'Plus Jakarta Sans',
                                             color: Color(0xFF101213),
                                             fontSize: 14,
@@ -388,7 +375,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                         image: DecorationImage(
                           fit: BoxFit.fitHeight,
                           image: Image.asset(
-                            'assets/images/Fondo.png',
+                            'assets/FondoAuth.png',
                           ).image,
                         ),
                         borderRadius: BorderRadius.circular(16),
